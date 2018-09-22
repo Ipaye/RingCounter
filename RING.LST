@@ -1,0 +1,152 @@
+MPASM  5.39                          RING.ASM   9-21-2018  13:24:53         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;fAVOURITE HEADER SECTION
+                      00002 ;--------------------------------------------
+                      00003 
+  00000001            00004 TMR0    EQU     1
+  00000002            00005 ZEROBIT EQU     2
+  00000003            00006 STATUS  EQU     3
+  00000005            00007 PORTA   EQU     5
+  00000006            00008 PORTB   EQU     6
+  00000085            00009 TRISA   EQU     85H
+  00000086            00010 TRISB   EQU     86H
+  00000081            00011 OPTION_R EQU    81H
+  0000000C            00012 COUNT   EQU     0CH
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00013 ORG     0
+  00000002            00014 PCL     EQU     2
+Warning[205]: Found directive in column 1. (LIST)
+                      00015 LIST P=16f84a
+                      00016 
+Warning[203]: Found opcode in column 1. (GOTO)
+0000   2810           00017 GOTO    START
+                      00018 ;CONFIG
+                      00019 ;--------------------------------------------
+                      00020 
+                      00021 
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3FF0           00022 __CONFIG H'3FF0'
+                      00023 
+                      00024 
+                      00025 ;SUBROTINE
+                      00026 ;--------------------------------------------
+                      00027 
+0001   0181           00028 DELAY5  CLRF    TMR0
+0002   0801           00029 LOOPA   MOVF    TMR0,W
+0003   3C08           00030                 SUBLW   .8
+0004   1D03           00031                 BTFSS   STATUS,ZEROBIT
+0005   2802           00032                 GOTO    LOOPA
+0006   3400           00033                 RETLW   0
+                      00034 
+Message[305]: Using default destination of 1 (file).
+0007   0782           00035 CONVERT         ADDWF   PCL
+0008   3480           00036                         RETLW   B'10000000'
+0009   3401           00037                         RETLW   B'00000001'
+000A   3402           00038                         RETLW   B'00000010'
+000B   3404           00039                         RETLW   B'00000100'
+000C   3408           00040                         RETLW   B'00001000'
+000D   3410           00041                         RETLW   B'00010000'
+000E   3420           00042                         RETLW   B'00100000'
+000F   3440           00043                         RETLW   B'01000000'
+                      00044                         
+                      00045 
+                      00046 ;--------------------------------------------
+                      00047 ; CONFIGURATION
+                      00048 
+MPASM  5.39                          RING.ASM   9-21-2018  13:24:53         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0010   1683           00049 START   BSF     STATUS,5
+0011   301F           00050                 MOVLW   B'00011111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0012   0085           00051                 MOVWF   TRISA
+                      00052 
+0013   3000           00053                 MOVLW   B'00000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0014   0086           00054                 MOVWF   TRISB
+                      00055                 
+0015   3007           00056                 MOVLW   B'00000111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0016   0081           00057                 MOVWF   OPTION_R
+                      00058 
+0017   1283           00059                 BCF     STATUS,5
+0018   0185           00060                 CLRF    PORTA
+0019   0186           00061                 CLRF    PORTB
+                      00062 
+                      00063 ;--------------------------------------------
+                      00064 ; BEGIN
+                      00065 
+001A   3000           00066 BEGIN   MOVLW   B'00000000'
+001B   0086           00067                 MOVWF   PORTB
+                      00068 
+001C   018C           00069                 CLRF    COUNT
+001D   1805           00070 PRESS   BTFSC   PORTA,0
+001E   281D           00071                 GOTO    PRESS
+001F   2001           00072                 CALL    DELAY5
+Message[305]: Using default destination of 1 (file).
+0020   0A8C           00073                 INCF    COUNT
+0021   2007           00074                 CALL    CONVERT
+0022   080C           00075                 MOVF    COUNT,W
+0023   3C08           00076                 SUBLW   .8
+0024   1903           00077                 BTFSC   STATUS,ZEROBIT
+0025   018C           00078                 CLRF    COUNT
+0026   080C           00079                 MOVF    COUNT,W
+0027   2007           00080                 CALL    CONVERT
+0028   0086           00081                 MOVWF   PORTB
+                      00082                 
+0029   1C05           00083 RELEASE BTFSS   PORTA,0
+002A   2829           00084                 GOTO    RELEASE
+002B   281D           00085                 GOTO    PRESS
+                      00086 
+                      00087 
+Warning[205]: Found directive in column 1. (END)
+                      00088 END
+MPASM  5.39                          RING.ASM   9-21-2018  13:24:53         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BEGIN                             0000001A
+CONVERT                           00000007
+COUNT                             0000000C
+DELAY5                            00000001
+LOOPA                             00000002
+OPTION_R                          00000081
+PCL                               00000002
+PORTA                             00000005
+PORTB                             00000006
+PRESS                             0000001D
+RELEASE                           00000029
+START                             00000010
+STATUS                            00000003
+TMR0                              00000001
+TRISA                             00000085
+TRISB                             00000086
+ZEROBIT                           00000002
+__16F84A                          00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXX---- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    44
+Program Memory Words Free:   980
+
+
+Errors   :     0
+Warnings :     5 reported,     0 suppressed
+Messages :     5 reported,     0 suppressed
+
+

@@ -1,0 +1,145 @@
+MPASM  5.39                        LOOKUP.ASM   9-21-2018  9:13:33         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;fAVOURITE HEADER SECTION
+                      00002 ;--------------------------------------------
+                      00003 
+  00000001            00004 TMR0    EQU     1
+  00000002            00005 ZEROBIT EQU     2
+  00000003            00006 STATUS  EQU     3
+  00000005            00007 PORTA   EQU     5
+  00000006            00008 PORTB   EQU     6
+  00000085            00009 TRISA   EQU     85H
+  00000086            00010 TRISB   EQU     86H
+  00000081            00011 OPTION_R EQU    81H
+  0000000C            00012 COUNT   EQU     0CH
+Warning[205]: Found directive in column 1. (ORG)
+0000                  00013 ORG     0
+  00000002            00014 PCL     EQU     2
+Warning[205]: Found directive in column 1. (LIST)
+                      00015 LIST P=16f84a
+                      00016 
+Warning[203]: Found opcode in column 1. (GOTO)
+0000   280D           00017 GOTO    START
+                      00018 ;CONFIG
+                      00019 ;--------------------------------------------
+                      00020 
+                      00021 
+Warning[205]: Found directive in column 1. (__CONFIG)
+2007   3FF0           00022 __CONFIG H'3FF0'
+                      00023 
+                      00024 
+                      00025 ;SUBROTINE
+                      00026 ;--------------------------------------------
+                      00027 
+0001   0181           00028 DELAY5  CLRF    TMR0
+0002   0801           00029 LOOPA   MOVF    TMR0,W
+0003   3C08           00030                 SUBLW   .8
+0004   1D03           00031                 BTFSS   STATUS,ZEROBIT
+0005   2802           00032                 GOTO    LOOPA
+0006   3400           00033                 RETLW   0
+                      00034 
+Message[305]: Using default destination of 1 (file).
+0007   0782           00035 CONVERT         ADDWF   PCL
+0008   3408           00036                         RETLW   B'00001000'
+0009   3401           00037                         RETLW   B'00000001'
+000A   3402           00038                         RETLW   B'00000010'
+000B   3404           00039                         RETLW   B'00000100'
+000C   3408           00040                         RETLW   B'00001000'
+                      00041 
+                      00042 
+                      00043 ;--------------------------------------------
+                      00044 ; CONFIGURATION
+                      00045 
+000D   1683           00046 START   BSF     STATUS,5
+000E   301F           00047                 MOVLW   B'00011111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+MPASM  5.39                        LOOKUP.ASM   9-21-2018  9:13:33         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000F   0085           00048                 MOVWF   TRISA
+                      00049 
+0010   3000           00050                 MOVLW   B'00000000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0011   0086           00051                 MOVWF   TRISB
+                      00052                 
+0012   3007           00053                 MOVLW   B'00000111'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0013   0081           00054                 MOVWF   OPTION_R
+                      00055 
+0014   1283           00056                 BCF     STATUS,5
+0015   0185           00057                 CLRF    PORTA
+0016   0186           00058                 CLRF    PORTB
+                      00059 
+                      00060 ;--------------------------------------------
+                      00061 ; BEGIN
+                      00062 
+0017   018C           00063 BEGIN   CLRF    COUNT
+0018   1805           00064 PRESS   BTFSC   PORTA,0
+0019   2818           00065                 GOTO    PRESS
+001A   2001           00066                 CALL    DELAY5
+Message[305]: Using default destination of 1 (file).
+001B   0A8C           00067                 INCF    COUNT
+001C   080C           00068                 MOVF    COUNT,W
+001D   3C04           00069                 SUBLW   .4
+001E   1903           00070                 BTFSC   STATUS,ZEROBIT
+001F   018C           00071                 CLRF    COUNT
+0020   080C           00072                 MOVF    COUNT,W
+0021   2007           00073                 CALL    CONVERT
+0022   0086           00074                 MOVWF   PORTB
+                      00075                 
+0023   1C05           00076 RELEASE BTFSS   PORTA,0
+0024   2823           00077                 GOTO    RELEASE
+0025   2818           00078                 GOTO    PRESS
+                      00079 
+                      00080 
+Warning[205]: Found directive in column 1. (END)
+                      00081 END
+MPASM  5.39                        LOOKUP.ASM   9-21-2018  9:13:33         PAGE  3
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BEGIN                             00000017
+CONVERT                           00000007
+COUNT                             0000000C
+DELAY5                            00000001
+LOOPA                             00000002
+OPTION_R                          00000081
+PCL                               00000002
+PORTA                             00000005
+PORTB                             00000006
+PRESS                             00000018
+RELEASE                           00000023
+START                             0000000D
+STATUS                            00000003
+TMR0                              00000001
+TRISA                             00000085
+TRISB                             00000086
+ZEROBIT                           00000002
+__16F84A                          00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXX---------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:    38
+Program Memory Words Free:   986
+
+
+Errors   :     0
+Warnings :     5 reported,     0 suppressed
+Messages :     5 reported,     0 suppressed
+
+
